@@ -1,21 +1,37 @@
+import pandas as pd
 
-# Unauthenticated client only works with public data sets. Note 'None'
-# in place of application token, and no username or password:
-client = Socrata("data.lcb.wa.gov", None)
+from sodapy import Socrata
 
-# Example authenticated client (needed for non-public datasets):
-client = Socrata(data.lcb.wa.gov,
-                 'hTbHgZowMsN6SuOjSXztZhMm3',
-                 userame="Jawaun.Brown95@gmail.com",
-                 password="CannabisPassword$")
 
-# First 2000 results, returned as JSON from API / converted to Python list of
-# dictionaries by sodapy.
-results = client.get("bhbp-x4eb", limit=2000)
+def connect(limiter):
+    # Initiate connection using api token, username and pw
+    client = Socrata('data.lcb.wa.gov',
+                     'hTbHgZowMsN6SuOjSXztZhMm3',
+                     username='Jawaun.Brown95@gmail.com',
+                     password='CannabisPassword$')
 
-# Convert to pandas DataFrame
-results_df = pd.DataFrame.from_records(results)
+    # First 2000 results, returned as JSON from API / converted to Python list of
+    # dictionaries by sodapy.
+    results = client.get('bhbp-x4eb', limit=limiter)
 
-print(results_df)
+    # Convert to pandas DataFrame
+    results_df = pd.DataFrame.from_records(results)
+    cols = results_df.columns
+    types = results_df.dtypes
+    descriptions = results_df.describe()
+    bycounty = results_df.sort_values(by='county')
+    print(cols)
+    print(types)
+    print(descriptions)
+    print(bycounty)
+
+    return results_df
+
+
+# def get_schema(df):
+#     pd.build_table_schema(df)
+
 
 if __name__ == "__main__":
+    d = connect(2000)
+    d.to_csv('/tmp/cannadata.csv')
