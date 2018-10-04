@@ -34,4 +34,4 @@ def connect(limiter):
 
 if __name__ == "__main__":
     d = connect(2000)
-    d.to_csv('projects/cannadata/cannadata.csv')
+    d.to_csv('/Users/Juan/projects/cannadata/cannadata.csv')
